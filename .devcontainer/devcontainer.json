@@ -1,0 +1,9 @@
+{
+  "name": "Ruby Jekyll Dev Container",
+  "dockerFile": "Dockerfile",
+  "forwardPorts": [4000],
+  "postCreateCommand": "rvm install ruby-3.0.5; rvm use 3.0.5; gem install bundler jekyll; bundle update",
+  "settings": { 
+    "terminal.integrated.shell.linux": "/bin/bash"
+  }
+}
