@@ -2,9 +2,10 @@ ARG VARIANT="3.0.5"
 ARG NODE_VERSION="14"
 FROM ruby:${VARIANT}
 
-# Install Node.js
-RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
-RUN apt-get install -y nodejs
+# Update the package lists and install Node.js
+RUN apt-get update && \
+    curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash - && \
+    apt-get install -y nodejs
 
 # Optionally set a non-root user
 RUN groupadd --gid 1000 node \
@@ -18,4 +19,5 @@ ENV DEBIAN_FRONTEND=dialog
 
 # Set the default shell to bash instead of sh
 ENV SHELL /bin/bash
+
 
