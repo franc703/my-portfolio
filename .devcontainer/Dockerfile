@@ -1,18 +1,21 @@
-FROM ruby:3.0.5
+ARG VARIANT="3.0.5"
+ARG NODE_VERSION="14"
+FROM ruby:${VARIANT}
 
-RUN apt-get update -yqq && apt-get install -yqq --no-install-recommends \
-  curl \
-  gpg \
-  && curl -sSL https://rvm.io/mpapis.asc | gpg --import - \
-  && curl -sSL https://rvm.io/pkuczynski.asc | gpg --import - \
-  && curl -sSL https://get.rvm.io | bash -s stable
+# Install Node.js
+RUN curl -fsSL https://deb.nodesource.com/setup_${NODE_VERSION}.x | bash -
+RUN apt-get install -y nodejs
 
-ENV PATH /usr/local/rvm/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+# Optionally set a non-root user
+RUN groupadd --gid 1000 node \
+    && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
 
-RUN /bin/bash -l -c "rvm requirements"
-RUN /bin/bash -l -c "rvm install 3.0.5"
-RUN /bin/bash -l -c "gem install bundler jekyll"
+# Install dependencies for Jekyll
+RUN gem install bundler jekyll
 
-WORKDIR /workspace
+# Switch back to dialog for any ad-hoc use of apt-get
+ENV DEBIAN_FRONTEND=dialog
 
-CMD [ "bash" ]
+# Set the default shell to bash instead of sh
+ENV SHELL /bin/bash
+
